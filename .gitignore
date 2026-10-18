@@ -1,0 +1,5 @@
+.phpunit.result.cache
+/tests/integration/tmp
+/vendor
+composer.lock
+node_modules
