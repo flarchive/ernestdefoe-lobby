@@ -1,0 +1,539 @@
+// ---------------------------------------------------------------------------
+// The shell: a fixed sidebar on the left, the page beside it.
+//
+// Core's header goes on tablets and up: everything in it is in the sidebar
+// (search at the top, extension links in the nav, and the whole secondary
+// header — notifications, messages, the theme switcher, the session menu —
+// in the user panel at the bottom).
+// ---------------------------------------------------------------------------
+
+.LobbyShell-topbar,
+.LobbyShell-tabbar,
+.LobbyShell-scrim,
+.LobbyFab {
+  display: none;
+}
+
+.LobbyShell-sidebar {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: var(--lobby-sidebar-w);
+  z-index: calc(~'var(--zindex-header) + 1');
+}
+
+@media @tablet-up {
+  .App {
+    padding-top: 0;
+    padding-left: var(--lobby-sidebar-w);
+  }
+  .App-header,
+  .App-navigation {
+    display: none !important;
+  }
+  .App-composer {
+    left: var(--lobby-sidebar-w);
+  }
+  .App-footer {
+    padding-left: 0;
+  }
+}
+
+.LobbySidebar {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: var(--lobby-sidebar);
+  border-right: 1px solid var(--lobby-border);
+  color: var(--lobby-text);
+  font-size: 14px;
+}
+
+.LobbySidebar-head {
+  flex: 0 0 60px;
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  border-bottom: 1px solid var(--lobby-border);
+}
+
+.LobbySidebar-forum {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  color: var(--lobby-text);
+  text-decoration: none !important;
+
+  &:hover .LobbySidebar-title {
+    color: var(--lobby-strong);
+  }
+}
+
+.LobbySidebar-mark {
+  flex: 0 0 32px;
+  height: 32px;
+  border-radius: 9px;
+  background: var(--lobby-accent);
+  color: var(--lobby-on-accent);
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+
+  &--logo {
+    background: var(--lobby-input);
+  }
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+}
+
+.LobbySidebar-forumText {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.LobbySidebar-title {
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.LobbySidebar-members {
+  font-size: 12px;
+  color: var(--lobby-muted);
+}
+
+// Core's search control is a button that opens the search modal; here it is
+// drawn as the field the mockup shows.
+.LobbySidebar-search {
+  padding: 12px;
+
+  .Search {
+    width: 100%;
+  }
+  .Search-input {
+    width: 100%;
+    height: 36px;
+    justify-content: flex-start;
+    gap: 8px;
+    border-radius: 8px;
+    border: 1px solid var(--lobby-border);
+    background: var(--lobby-bg);
+    color: var(--lobby-muted);
+    padding: 0 12px;
+    font-weight: 400;
+
+    &:hover,
+    &:focus-visible {
+      border-color: var(--lobby-input-border);
+      color: var(--lobby-text);
+    }
+  }
+  .Button-label {
+    display: inline !important;
+  }
+}
+
+.LobbySidebar-scroll {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding-bottom: 12px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--lobby-border) transparent;
+}
+
+.LobbySidebar-nav,
+.LobbyGroup-channels,
+.LobbySidebar-primary .Header-controls {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.LobbySidebar-nav {
+  padding: 4px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+
+  // Extension nav items arrive as core LinkButtons.
+  > li > .Button,
+  > li > a:not(.LobbyNav) {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    height: 34px;
+    padding: 0 10px;
+    border-radius: 7px;
+    background: transparent;
+    color: var(--lobby-muted);
+    font-weight: 400;
+    text-align: start;
+
+    .Button-icon {
+      width: 16px;
+      margin: 0;
+      font-size: 14px;
+    }
+    &:hover {
+      background: var(--lobby-hover);
+      color: var(--lobby-text);
+    }
+    &.active {
+      background: var(--lobby-active);
+      color: var(--lobby-strong);
+      font-weight: 600;
+    }
+  }
+  > li.Dropdown-separator {
+    display: none;
+  }
+}
+
+.LobbyNav {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 34px;
+  padding: 0 10px;
+  border-radius: 7px;
+  color: var(--lobby-muted);
+  text-decoration: none !important;
+
+  &:hover {
+    background: var(--lobby-hover);
+    color: var(--lobby-text);
+  }
+  &.active {
+    background: var(--lobby-active);
+    color: var(--lobby-strong);
+    font-weight: 600;
+  }
+}
+
+.LobbyNav-icon {
+  width: 16px;
+  text-align: center;
+}
+
+// Extension links that live in core's header (HeaderPrimary), drawn as nav.
+.LobbySidebar-primary {
+  padding: 0 8px;
+
+  .Header-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .Header-controls > li > .Button {
+    display: flex;
+    width: 100%;
+    height: 34px;
+    align-items: center;
+    gap: 10px;
+    padding: 0 10px;
+    border-radius: 7px;
+    color: var(--lobby-muted);
+    background: transparent;
+
+    &:hover {
+      background: var(--lobby-hover);
+      color: var(--lobby-text);
+    }
+  }
+  .Header-controls:empty {
+    display: none;
+  }
+}
+
+.LobbyCount {
+  margin-left: auto;
+  min-width: 20px;
+  padding: 1px 7px;
+  border-radius: 10px;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 16px;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+
+  &--accent {
+    background: var(--lobby-accent);
+    color: var(--lobby-on-accent);
+  }
+  &--mention {
+    background: var(--lobby-red);
+    color: #fff;
+  }
+}
+
+.LobbyGroup {
+  padding: 14px 8px 4px;
+}
+
+.LobbyGroup-label {
+  margin: 0;
+  padding: 0 10px 6px;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--lobby-faint);
+  font-weight: 600;
+}
+
+.LobbyGroup-channels {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.LobbyChannel {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 32px;
+  padding: 0 10px;
+  border-radius: 7px;
+  color: var(--lobby-muted);
+  text-decoration: none !important;
+
+  &:hover {
+    background: var(--lobby-hover);
+    color: var(--lobby-text);
+  }
+  &.active {
+    background: var(--lobby-active);
+    color: var(--lobby-strong);
+    font-weight: 600;
+  }
+  &--unread {
+    color: var(--lobby-strong);
+    font-weight: 600;
+  }
+  &--more {
+    font-size: 13px;
+    color: var(--lobby-faint);
+  }
+}
+
+.LobbyChannel-hash {
+  color: var(--lobby-dim);
+  font-family: var(--lobby-mono);
+}
+
+.LobbyChannel-name {
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.LobbyUnreadDot {
+  margin-left: auto;
+  flex: 0 0 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--lobby-accent);
+}
+
+// The reader, at the foot: who they are, then core's header controls.
+.LobbySidebar-user {
+  flex: 0 0 auto;
+  min-height: 60px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 8px 8px 12px;
+  padding-bottom: calc(~'8px + env(safe-area-inset-bottom, 0px)');
+  border-top: 1px solid var(--lobby-border);
+  background: var(--lobby-panel);
+}
+
+.LobbyMe {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  // A row of its own: a forum's header controls (notifications, messages,
+  // theme switchers, the session menu...) can be six icons or more, and the
+  // reader's name must not be squeezed to an ellipsis by them.
+  flex: 1 1 100%;
+  min-width: 0;
+  color: var(--lobby-text);
+  text-decoration: none !important;
+  border-radius: 8px;
+}
+
+.LobbyMe-avatar {
+  position: relative;
+  flex: 0 0 34px;
+
+  .Avatar {
+    --size: 34px;
+    width: 34px;
+    height: 34px;
+  }
+}
+
+.LobbyDot {
+  position: absolute;
+  right: -2px;
+  bottom: -2px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 2px solid var(--lobby-panel);
+
+  &--on {
+    background: var(--lobby-online);
+  }
+  &--away {
+    background: var(--lobby-away);
+  }
+}
+
+.LobbyMe-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.LobbyMe-name {
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.LobbyMe-status {
+  font-size: 12px;
+  color: var(--lobby-online);
+}
+
+.LobbySidebar-controls {
+  flex: 1 1 100%;
+  min-width: 0;
+
+  // Guests get Sign up / Log in, which want the whole row.
+  .guest-user & {
+    flex: 1 1 auto;
+  }
+
+  .Header-controls {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 2px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .Header-controls > li {
+    margin: 0;
+  }
+  // Search is at the top of the sidebar already.
+  .item-search {
+    display: none;
+  }
+  .Header-controls > li > .Button,
+  .Dropdown-toggle.Button {
+    width: 34px;
+    height: 34px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--lobby-muted);
+
+    &:hover,
+    &:focus-visible {
+      background: var(--lobby-hover);
+      color: var(--lobby-text);
+    }
+    .Button-label,
+    .Button-caret {
+      display: none;
+    }
+  }
+  .guest-user & .item-signUp .Button,
+  .guest-user & .item-logIn .Button {
+    width: auto;
+    padding: 0 12px;
+
+    .Button-label {
+      display: inline;
+    }
+  }
+  .guest-user & .item-signUp .Button {
+    background: var(--lobby-accent) !important;
+    color: var(--lobby-on-accent) !important;
+    font-weight: 600;
+  }
+  .guest-user & .item-logIn .Button {
+    color: var(--lobby-text) !important;
+  }
+  // The session menu is a cog here: avatar and name are drawn beside it.
+  .SessionDropdown .Avatar {
+    display: none;
+  }
+  .LobbySessionIcon {
+    margin: 0;
+  }
+  // Counts on the icons, as core draws them in the header.
+  .NotificationsDropdown-unread,
+  .Bubble {
+    top: 2px;
+    right: 2px;
+  }
+  // Menus open upward and inward: the panel is at the foot of the screen.
+  .Dropdown-menu {
+    top: auto !important;
+    bottom: 100% !important;
+    right: 0;
+    left: auto;
+    margin-bottom: 6px;
+  }
+  .NotificationsDropdown .Dropdown-menu,
+  .DialogsDropdown .Dropdown-menu {
+    position: fixed;
+    left: calc(~'var(--lobby-sidebar-w) + 8px') !important;
+    right: auto !important;
+    bottom: 8px !important;
+    max-height: calc(~'100vh - 16px');
+  }
+}
+
+.SessionDropdown .LobbySessionIcon {
+  display: none;
+}
+.LobbySidebar .SessionDropdown .LobbySessionIcon {
+  display: inline-block;
+}
+.LobbySidebar .SessionDropdown .username {
+  .visually-hidden();
+}
+
+.visually-hidden() {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}

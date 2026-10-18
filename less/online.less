@@ -1,0 +1,124 @@
+// ---------------------------------------------------------------------------
+// The Online list, wherever it is placed.
+// ---------------------------------------------------------------------------
+
+.LobbyOnline {
+  position: sticky;
+  top: 18px;
+  color: var(--lobby-text);
+  font-size: 14px;
+}
+
+.LobbyOnline-section {
+  margin-bottom: 18px;
+}
+
+.LobbyOnline-label {
+  margin: 0;
+  padding: 0 6px 8px;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--lobby-faint);
+  font-weight: 600;
+}
+
+.LobbyOnline-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.LobbyMember {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px;
+  border-radius: 8px;
+  color: var(--lobby-text);
+  text-decoration: none !important;
+
+  &:hover {
+    background: var(--lobby-hover);
+  }
+}
+
+.LobbyOnline-section--staff .LobbyMember-name {
+  color: var(--lobby-accent-text);
+}
+
+.LobbyFace {
+  position: relative;
+  flex: 0 0 32px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--face-bg, var(--lobby-active));
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 600;
+
+  img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+  .LobbyDot {
+    width: 10px;
+    height: 10px;
+    border-color: var(--lobby-rail);
+  }
+}
+
+.LobbyMember-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.LobbyMember-name {
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.LobbyMember-status {
+  font-size: 12px;
+  color: var(--lobby-faint);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.LobbyOnline-empty,
+.LobbyOnline-more {
+  margin: 0;
+  padding: 0 6px;
+  font-size: 12px;
+  color: var(--lobby-faint);
+}
+
+.LobbyOnline-skeleton {
+  height: 32px;
+  margin: 6px;
+  border-radius: 8px;
+  background: var(--lobby-hover);
+}
+
+// In a host's card the list is not sticky and sits on the card's colour.
+.LobbyBespokeWidget .LobbyOnline,
+.LobbyFofWidget .LobbyOnline {
+  position: static;
+
+  .LobbyDot {
+    border-color: var(--body-bg);
+  }
+}
