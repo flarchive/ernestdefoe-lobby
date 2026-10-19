@@ -1,0 +1,15 @@
+name: Lobby PHP
+
+on: [workflow_dispatch, push, pull_request]
+
+# 🚨 Public repo only: on a private repo every job is billed, so while
+# Lobby is private these stand down and private-*.yml run instead.
+jobs:
+  run:
+    if: ${{ !github.event.repository.private }}
+    uses: flarum/framework/.github/workflows/REUSABLE_backend.yml@2.x
+    with:
+      enable_backend_testing: true
+      enable_phpstan: true
+
+      backend_directory: .

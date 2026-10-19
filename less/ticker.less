@@ -1,0 +1,37 @@
+// ---------------------------------------------------------------------------
+// ESPN CFB Ticker (ernestdefoe/espn-cfb-ticker), on forums that run both.
+//
+// The ticker is fixed under the bar at the top of the window, full width.
+// Lobby has no top bar on tablets and up and its own fixed bar on phones, so
+// the ticker started under the sidebar (its label hidden) on desktop and
+// behind the top bar on phones. It belongs at the top of the page column,
+// and Lobby's sticky headers move down by its height.
+// ---------------------------------------------------------------------------
+
+@lobby-ticker-h: 36px;
+
+@media @tablet-up {
+  html #cfb-ticker-root[data-position='top'] {
+    left: var(--lobby-sidebar-w);
+  }
+
+  .has-cfb-ticker-top {
+    .LobbyChannelHeader,
+    .DiscussionPage .Page-hero {
+      top: @lobby-ticker-h;
+    }
+    .DiscussionPage .DiscussionPage-nav {
+      top: 78px + @lobby-ticker-h;
+    }
+  }
+}
+
+@media @phone {
+  html #cfb-ticker-root[data-position='top'] {
+    top: 56px;
+  }
+
+  .has-cfb-ticker-top .LobbyChannelHeader {
+    top: 56px + @lobby-ticker-h;
+  }
+}

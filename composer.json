@@ -1,0 +1,91 @@
+{
+    "name": "ernestdefoe/lobby",
+    "description": "Lobby — a dark-first community theme for Flarum 2. Tags become #channels in a left sidebar with unread dots and mention badges, discussions read as chat-style rows with a \"new since your last visit\" divider, and an Online list sits on the right.",
+    "type": "flarum-extension",
+    "keywords": [
+        "flarum",
+        "flarum-extension",
+        "theme",
+        "dark",
+        "community",
+        "channels",
+        "lobby"
+    ],
+    "homepage": "https://github.com/ernestdefoe/lobby",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Ernestdefoe",
+            "email": "ernestdefoe@gmail.com"
+        }
+    ],
+    "require": {
+        "php": "^8.3",
+        "flarum/core": "^2.0"
+    },
+    "suggest": {
+        "flarum/tags": "Tags become the #channels in the sidebar. Without it the sidebar shows Activity and Messages only.",
+        "flarum/mentions": "Mention badges on channels in the sidebar.",
+        "flarum/messages": "A Messages link with an unread badge in the sidebar and the phone tab bar.",
+        "flarum/sticky": "The Pinned chip on discussion rows.",
+        "ernestdefoe/presence": "What each person in the Online list is doing, under their name.",
+        "fof/forum-widgets-core": "The Online list is offered as a widget.",
+        "ernestdefoe/wardrobe": "Run Lobby next to other themes and let members choose."
+    },
+    "autoload": {
+        "psr-4": {
+            "ErnestDefoe\\Lobby\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "ErnestDefoe\\Lobby\\Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "flarum-extension": {
+            "title": "Lobby",
+            "category": "theme",
+            "icon": {
+                "name": "fas fa-hashtag",
+                "backgroundColor": "#f5a524",
+                "color": "#15120a"
+            }
+        }
+    },
+    "support": {
+        "issues": "https://github.com/ernestdefoe/lobby/issues",
+        "source": "https://github.com/ernestdefoe/lobby"
+    },
+    "require-dev": {
+        "ernestdefoe/wardrobe": "^1.0",
+        "flarum/lock": "^2.0",
+        "flarum/mentions": "^2.0",
+        "flarum/messages": "^2.0",
+        "flarum/phpstan": "^2.0",
+        "flarum/sticky": "^2.0",
+        "flarum/subscriptions": "^2.0",
+        "flarum/tags": "^2.0",
+        "flarum/testing": "^2.0",
+        "fof/synopsis": "^2.0@RC"
+    },
+    "scripts": {
+        "test": [
+            "@test:integration"
+        ],
+        "test:integration": "phpunit -c tests/phpunit.integration.xml",
+        "test:setup": "@php tests/integration/setup.php",
+        "analyse:phpstan": "phpstan analyse"
+    },
+    "scripts-descriptions": {
+        "test": "Runs all tests.",
+        "test:integration": "Runs all integration tests.",
+        "test:setup": "Sets up a database for use with integration tests. Execute this only once.",
+        "analyse:phpstan": "Run static analysis"
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "minimum-stability": "beta",
+    "prefer-stable": true
+}
