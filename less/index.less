@@ -1,0 +1,220 @@
+// ---------------------------------------------------------------------------
+// The index as a channel: header, list, compose bar, and the Online rail.
+// ---------------------------------------------------------------------------
+
+.IndexPage {
+  .Page-sidebar,
+  .Page-hero {
+    display: none;
+  }
+  .Page-container {
+    max-width: none;
+    width: 100%;
+    padding: 0;
+    display: flex;
+    align-items: stretch;
+    gap: 0;
+    min-height: 100vh;
+  }
+  .Page-content {
+    flex: 1 1 auto;
+    min-width: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+  }
+  .DiscussionList {
+    flex: 1 0 auto;
+    padding: 12px 16px;
+  }
+}
+
+.LobbyChannelHeader {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+  min-height: 60px;
+  padding: 10px 24px;
+  background: var(--lobby-bg);
+  border-bottom: 1px solid var(--lobby-border);
+}
+
+.LobbyChannelHeader-main {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  min-width: 0;
+  flex: 1 1 260px;
+}
+
+.LobbyChannelHeader-title {
+  // The channel's name never gives way to its description: it keeps its
+  // width, and the description takes the ellipsis.
+  flex: 0 0 auto;
+  max-width: 100%;
+  margin: 0;
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--lobby-strong);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.LobbyChannelHeader-hash {
+  color: var(--lobby-dim);
+  font-family: var(--lobby-mono);
+  font-size: 18px;
+  margin-right: 6px;
+}
+
+.LobbyChannelHeader-description {
+  flex: 1 1 0;
+  margin: 0;
+  color: var(--lobby-faint);
+  font-size: 13px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+
+.LobbyChannelHeader-tools {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+
+  // Direct lists only: a dropdown's own menu is a <ul> too, and must keep
+  // core's show/hide.
+  > ul {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .Button:not(.Button--primary) {
+    height: 34px;
+    padding: 0 12px;
+    border-radius: 8px;
+    border: 1px solid var(--lobby-border);
+    background: transparent;
+    color: var(--lobby-text);
+
+    &:hover,
+    &.active {
+      background: var(--lobby-hover);
+    }
+  }
+  .Button--icon:not(.Button--primary) {
+    width: 34px;
+    padding: 0;
+  }
+}
+
+.LobbyFilter.active {
+  border-color: var(--lobby-accent) !important;
+}
+
+.LobbyChannelHeader-new {
+  height: 34px;
+  padding: 0 14px;
+  border-radius: 8px;
+  font-weight: 600;
+}
+
+// Phone only.
+.LobbyChips {
+  display: none;
+}
+
+// The rows' container.
+.DiscussionList-discussions {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.DiscussionList-loadMore {
+  padding: 8px 0;
+}
+
+.LobbyNewDivider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 8px;
+  color: var(--lobby-red);
+  font-size: 12px;
+  font-weight: 600;
+
+  &::before,
+  &::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--lobby-red);
+  }
+}
+
+.LobbyCompose {
+  position: sticky;
+  bottom: 0;
+  z-index: 4;
+  padding: 16px 24px 20px;
+  background: linear-gradient(to bottom, transparent, var(--lobby-bg) 35%);
+}
+
+.LobbyCompose-button {
+  width: 100%;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 16px;
+  border-radius: 12px;
+  border: 1px solid var(--lobby-input-border);
+  background: var(--lobby-input);
+  color: var(--lobby-faint);
+  font: inherit;
+  text-align: start;
+  cursor: text;
+
+  &:hover,
+  &:focus-visible {
+    border-color: var(--lobby-accent);
+    color: var(--lobby-text);
+  }
+}
+
+.LobbyCompose-icon {
+  color: var(--lobby-dim);
+  font-size: 18px;
+}
+
+// The Online column, on wide screens.
+.LobbyRail {
+  display: none;
+}
+
+@media (min-width: 1100px) {
+  .LobbyRail {
+    display: block;
+    flex: 0 0 var(--lobby-rail-w);
+    width: var(--lobby-rail-w);
+    background: var(--lobby-rail);
+    border-left: 1px solid var(--lobby-border);
+    padding: 18px 14px;
+
+    // fof/forum-widgets-core's side section, adopted underneath.
+    .Widgets {
+      margin-top: 8px;
+    }
+  }
+}

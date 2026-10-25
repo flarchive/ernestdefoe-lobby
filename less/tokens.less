@@ -1,0 +1,184 @@
+// ---------------------------------------------------------------------------
+// Fonts — Geist and Geist Mono, self-hosted.
+//
+// Served from the forum's own assets (Flarum copies assets/ to
+// /assets/extensions/ernestdefoe-lobby/ when the extension is enabled), not
+// from Google: no third-party connection on every page, no visitor IP sent to
+// a font CDN, and the files are cached with the forum's own. The latin face is
+// one variable file (29 KB, every weight); latin-ext and the mono face are
+// split by unicode-range so a browser only fetches what a page actually uses.
+// The URLs are relative to the compiled stylesheet, so they follow the forum's
+// assets disk wherever it is (a CDN included).
+// ---------------------------------------------------------------------------
+
+@lobby-fonts: "extensions/ernestdefoe-lobby/fonts";
+
+@font-face {
+  font-family: 'Geist';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 900;
+  src: url("@{lobby-fonts}/geist-latin-wght-normal.woff2") format('woff2-variations'), url("@{lobby-fonts}/geist-latin-wght-normal.woff2") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'Geist';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 900;
+  src: url("@{lobby-fonts}/geist-latin-ext-wght-normal.woff2") format('woff2-variations'), url("@{lobby-fonts}/geist-latin-ext-wght-normal.woff2") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+@font-face {
+  font-family: 'Geist Mono';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 500;
+  src: url("@{lobby-fonts}/geist-mono-latin-500-normal.woff2") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'Geist Mono';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 500;
+  src: url("@{lobby-fonts}/geist-mono-latin-ext-500-normal.woff2") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+// ---------------------------------------------------------------------------
+// Core's own palette, re-pointed.
+//
+// 🚨 Flarum's LESS variables are lazily evaluated and this file is compiled
+// after core's, so re-declaring them here re-themes EVERY core component —
+// modals, dropdowns, the composer, the post stream — without a selector of
+// ours touching them. Anything Lobby draws itself uses the --lobby-* tokens
+// below, which follow the same light/dark switch.
+// ---------------------------------------------------------------------------
+
+@body-bg-dark: #111318;
+@text-color-dark: #e6e8ec;
+@heading-color-dark: #f2f3f5;
+@muted-color-dark: #9aa1ad;
+@muted-more-color-dark: #6b7280;
+@control-bg-dark: #1c2027;
+@control-color-dark: #c9cdd4;
+@header-bg-dark: #16191f;
+@header-control-bg-dark: #1c2027;
+@overlay-bg-dark: fade(#08090c, 85%);
+@code-bg-dark: #0c0e12;
+@code-color-dark: #e6e8ec;
+@discussion-title-color-dark: #f2f3f5;
+
+@body-bg-light: #ffffff;
+@text-color-light: #1c1f24;
+@heading-color-light: #0f1114;
+@muted-color-light: #5d6470;
+@muted-more-color-light: #8a919c;
+@control-bg-light: #eef0f3;
+@control-color-light: #474d57;
+@header-bg-light: #f4f5f7;
+@header-control-bg-light: #e9ecf0;
+@code-bg-light: #f3f4f6;
+@discussion-title-color-light: #0f1114;
+
+:root {
+  --lobby-font: 'Geist', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --lobby-mono: 'Geist Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  --lobby-sidebar-w: 260px;
+  --lobby-rail-w: 260px;
+
+  // Light. Dark is the brand, but a forum set to light or auto gets a real
+  // light theme, not a dark one with the lights left on.
+  --lobby-bg: #ffffff;
+  --lobby-sidebar: #f4f5f7;
+  --lobby-rail: #f8f9fb;
+  --lobby-panel: #eceef2;
+  --lobby-border: #e1e4e9;
+  --lobby-text: #1c1f24;
+  --lobby-strong: #0f1114;
+  --lobby-muted: #5d6470;
+  --lobby-faint: #6b7280;
+  --lobby-dim: #9aa1ad;
+  --lobby-excerpt: #4b5260;
+  --lobby-hover: #eceef2;
+  --lobby-active: #e2e5ea;
+  --lobby-pinned: #f6f7f9;
+  --lobby-input: #ffffff;
+  --lobby-input-border: #d6dae1;
+  --lobby-red: #d93036;
+  --lobby-online: #2f9e4f;
+  --lobby-away: #9aa1ad;
+  --lobby-shadow: 0 8px 24px rgba(15, 17, 20, 0.12);
+
+  --lobby-accent: #f5a524;
+  --lobby-on-accent: #15120a;
+  --lobby-accent-text: #a35f00;
+}
+
+[data-theme^='dark'] {
+  --lobby-bg: #111318;
+  --lobby-sidebar: #16191f;
+  --lobby-rail: #14171c;
+  --lobby-panel: #13161b;
+  --lobby-border: #262b33;
+  --lobby-text: #e6e8ec;
+  --lobby-strong: #f2f3f5;
+  --lobby-muted: #9aa1ad;
+  --lobby-faint: #8b929e;
+  --lobby-dim: #6b7280;
+  --lobby-excerpt: #a9b0bb;
+  --lobby-hover: #1a1e25;
+  --lobby-active: #232831;
+  --lobby-pinned: #171a20;
+  --lobby-input: #1c2027;
+  --lobby-input-border: #2e343d;
+  --lobby-red: #e5484d;
+  --lobby-online: #4ec46a;
+  --lobby-away: #6b7280;
+  --lobby-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  --lobby-accent-text: var(--lobby-accent);
+}
+
+// ---------------------------------------------------------------------------
+// The accent. A preset, chosen by the owner and stamped on <html> by the
+// server (extend.php), or the forum's own primary colour.
+//
+// 🚨 A fixed set of presets, never a free colour field: a value that reaches
+// CSS from a text box is a value that can break out of it.
+// ---------------------------------------------------------------------------
+
+.lobby-accent(@fill; @on; @text) {
+  --lobby-accent: @fill;
+  --lobby-on-accent: @on;
+  --lobby-accent-text: @text;
+  --primary-color: @fill;
+  --link-color: @text;
+  .Button--color-vars(@on, @fill, 'button-primary');
+
+  &[data-theme^='dark'] {
+    --lobby-accent-text: @fill;
+    --link-color: @fill;
+  }
+}
+
+[data-lobby-accent='amber'] {
+  .lobby-accent(#f5a524; #15120a; #a35f00);
+}
+[data-lobby-accent='blue'] {
+  .lobby-accent(#5b8cff; #0b1020; #2f5fd6);
+}
+[data-lobby-accent='green'] {
+  .lobby-accent(#3dd68c; #04140c; #13804c);
+}
+[data-lobby-accent='pink'] {
+  .lobby-accent(#ff6b9a; #1f0710; #c8245a);
+}
+[data-lobby-accent='primary'] {
+  --lobby-accent: var(--primary-color);
+  --lobby-on-accent: var(--button-primary-color);
+  --lobby-accent-text: var(--link-color);
+}
