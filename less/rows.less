@@ -1,0 +1,203 @@
+// ---------------------------------------------------------------------------
+// Discussion rows as chat messages.
+// ---------------------------------------------------------------------------
+
+.DiscussionListItem {
+  position: relative;
+  border-radius: 10px;
+
+  &:hover {
+    background: var(--lobby-hover);
+  }
+
+  // Pinned rows sit on a faint panel, as in the mockup.
+  &:has(.LobbyRow-pinned) {
+    background: var(--lobby-pinned);
+  }
+  &.active {
+    background: var(--lobby-active);
+  }
+}
+
+.DiscussionListItem-content {
+  gap: 14px;
+  padding: 12px 10px;
+  color: var(--lobby-text);
+  align-items: flex-start;
+}
+
+.DiscussionListItem-author .Avatar {
+  --size: 40px;
+  width: 40px;
+  height: 40px;
+  font-size: 15px;
+  line-height: 40px;
+}
+
+// Badges ride on the avatar's corner; the pin is the chip in the meta line.
+.DiscussionListItem-badges {
+  top: auto;
+  bottom: -6px;
+  left: auto;
+  right: -6px;
+  margin: 0;
+
+  .item-sticky {
+    display: none;
+  }
+  .Badge {
+    --size: 18px;
+  }
+}
+
+.LobbyRow-main {
+  display: flex !important;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+  color: var(--lobby-text) !important;
+}
+
+.LobbyRow-meta {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 4px 8px;
+  min-width: 0;
+}
+
+.LobbyRow-author {
+  font-weight: 600;
+  color: var(--lobby-text);
+
+  .username {
+    font-weight: inherit;
+  }
+}
+
+.LobbyRow-time {
+  font-size: 12px;
+  color: var(--lobby-faint);
+}
+
+.LobbyRow-pinned {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--lobby-accent-text);
+  border: 1px solid var(--lobby-accent);
+  border-radius: 6px;
+  padding: 0 6px;
+  line-height: 16px;
+}
+
+// Core's info line (tags, extension additions) after the time, small.
+.LobbyRow-info.DiscussionListItem-info {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 6px;
+  font-size: 11px;
+
+  &:empty {
+    display: none;
+  }
+  .TagsLabel {
+    font-size: 11px;
+  }
+
+  // flarum/tags pins the tag labels to the row's top-right on the index;
+  // here they belong in the meta line, after the time.
+  .IndexPage &,
+  .UserPage & {
+    > .item-tags {
+      position: static;
+      max-width: none;
+      margin: 0;
+    }
+  }
+}
+
+.DiscussionListItem-title.LobbyRow-title {
+  margin: 0 !important;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--lobby-strong);
+  white-space: normal;
+
+  .DiscussionList:not(.DiscussionList--searchResults) .read & {
+    color: var(--lobby-muted);
+    font-weight: 500;
+  }
+  .DiscussionList:not(.DiscussionList--searchResults) .unread & {
+    color: var(--lobby-strong);
+    font-weight: 600;
+  }
+}
+
+.LobbyRow-excerpt {
+  color: var(--lobby-excerpt);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 14px;
+}
+
+// fof/synopsis's excerpt in Lobby's slot: one line, like Lobby's own,
+// whatever markup a rich excerpt brings.
+.LobbyRow-excerpt--synopsis {
+  display: block;
+
+  .Synopsis-excerpt,
+  .Synopsis-excerpt * {
+    display: inline;
+    margin: 0;
+    font-size: inherit;
+  }
+  .Synopsis-excerpt img {
+    display: none;
+  }
+}
+
+@media @phone {
+  // The member chose not to see excerpts on phones (synopsis's own setting).
+  .LobbyRow-excerpt--wide {
+    display: none;
+  }
+}
+
+.LobbyRow-stats {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+  padding-top: 2px;
+  white-space: nowrap;
+}
+
+.LobbyRow-replies {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--lobby-excerpt);
+  font-family: var(--lobby-mono);
+  font-size: 12px;
+}
+
+.LobbyRow-last {
+  font-size: 12px;
+  color: var(--lobby-faint);
+}
+
+// The ⋮ menu sits over the stats on hover rather than beside them.
+@media @tablet-up {
+  .DiscussionListItem-controls {
+    right: 8px;
+    top: 8px;
+
+    .Dropdown-toggle {
+      background: var(--lobby-active);
+      border-radius: 8px;
+    }
+  }
+}

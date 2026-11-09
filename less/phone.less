@@ -1,0 +1,326 @@
+// ---------------------------------------------------------------------------
+// Phones: a top bar, the channel chips, the list, a floating compose button
+// and a tab bar. The sidebar becomes a drawer behind the top bar's ☰.
+// ---------------------------------------------------------------------------
+
+@media @phone {
+  .App {
+    padding-top: 56px;
+    padding-bottom: calc(~'68px + env(safe-area-inset-bottom, 0px)');
+  }
+
+  // Core's phone header and drawer: the top bar, the tab bar and Lobby's own
+  // drawer cover all of it.
+  .App-navigation,
+  .App-drawer {
+    display: none !important;
+  }
+
+  .LobbyShell-topbar {
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: var(--zindex-header);
+  }
+
+  .LobbyTopBar {
+    height: 56px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 0 8px;
+    background: var(--lobby-sidebar);
+    border-bottom: 1px solid var(--lobby-border);
+    color: var(--lobby-text);
+  }
+
+  .LobbyTopBar-button,
+  .LobbyTopBar-search .Search-input {
+    flex: 0 0 44px;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border: 0;
+    background: transparent !important;
+    color: var(--lobby-text);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    border-radius: 10px;
+
+    .Button-label {
+      display: none;
+    }
+    .Button-icon {
+      margin: 0;
+    }
+  }
+
+  .LobbyTopBar-title {
+    flex: 1 1 auto;
+    min-width: 0;
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+  }
+  .LobbyTopBar-hash {
+    color: var(--lobby-dim);
+    font-family: var(--lobby-mono);
+    font-size: 17px;
+  }
+  .LobbyTopBar-text {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .LobbyTopBar-search .Search-clear {
+    display: none;
+  }
+
+  // The sidebar, as a drawer.
+  .LobbyShell-sidebar {
+    width: ~"min(300px, 86vw)";
+    z-index: calc(~'var(--zindex-header) + 2');
+    transform: translateX(-102%);
+    transition: transform 0.2s ease;
+    visibility: hidden;
+
+    .lobby-drawer-open & {
+      transform: none;
+      visibility: visible;
+    }
+  }
+  .LobbyShell-scrim {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: calc(~'var(--zindex-header) + 1');
+    background: rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+
+    .lobby-drawer-open & {
+      opacity: 1;
+      pointer-events: auto;
+    }
+  }
+  // Inside the drawer the menus open as core's phone menus do.
+  .LobbySidebar-controls .NotificationsDropdown .Dropdown-menu,
+  .LobbySidebar-controls .DialogsDropdown .Dropdown-menu {
+    left: 8px !important;
+    right: 8px !important;
+  }
+
+  // ernestdefoe/mobile-tab draws its own bottom bar. Lobby's tab bar takes
+  // its place rather than stacking a second one on top of it.
+  .MobileTab-bar {
+    display: none !important;
+  }
+
+  // Other floating buttons pinned to the bottom corner (ernestdefoe/parley's
+  // "N online" peek) would sit on the tab bar and the compose button; they
+  // stack above both instead.
+  .pl-peek {
+    bottom: calc(~'152px + env(safe-area-inset-bottom, 0px)') !important;
+  }
+  .App--discussion ~ * .pl-peek,
+  .App--discussion .pl-peek {
+    bottom: calc(~'84px + env(safe-area-inset-bottom, 0px)') !important;
+  }
+
+  // The tab bar.
+  .LobbyShell-tabbar {
+    display: block;
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: var(--zindex-header);
+  }
+  .LobbyTabBar {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(0, 1fr);
+    height: calc(~'68px + env(safe-area-inset-bottom, 0px)');
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    background: var(--lobby-sidebar);
+    border-top: 1px solid var(--lobby-border);
+  }
+  .LobbyTab {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    font-size: 11px;
+    color: var(--lobby-muted);
+    text-decoration: none !important;
+
+    &.active {
+      color: var(--lobby-accent-text);
+    }
+  }
+  .LobbyTab-icon {
+    position: relative;
+    font-size: 20px;
+    line-height: 22px;
+  }
+  .LobbyTab-badge {
+    position: absolute;
+    top: -6px;
+    left: calc(~'100% - 4px');
+    min-width: 16px;
+    padding: 0 5px;
+    border-radius: 9px;
+    background: var(--lobby-red);
+    color: #fff;
+    font-size: 10px;
+    font-weight: 700;
+    line-height: 16px;
+    text-align: center;
+  }
+
+  // The composer covers the bars when it is open.
+  .App-composer {
+    z-index: calc(~'var(--zindex-header) + 3');
+  }
+
+  // The channel header becomes the chip row.
+  .LobbyChannelHeader {
+    top: 56px;
+    padding: 0;
+    min-height: 0;
+    gap: 0;
+    flex-direction: column;
+    // 🚨 No wrap: a wrapping column sizes its line to the widest child, and
+    // the chip row's full width (every channel) would widen the whole page.
+    flex-wrap: nowrap;
+    align-items: stretch;
+    border-bottom-color: var(--lobby-border);
+  }
+  .LobbyChannelHeader-main,
+  .LobbyChannelHeader-new {
+    display: none;
+  }
+  .LobbyChannelHeader-tools {
+    order: 2;
+    margin: 0;
+    padding: 0 12px 8px;
+    justify-content: flex-end;
+
+    .Button:not(.Button--primary) {
+      height: 30px;
+      font-size: 12px;
+    }
+    .Button--icon:not(.Button--primary) {
+      width: 30px;
+    }
+  }
+  .LobbyChips {
+    order: 1;
+    display: flex;
+    min-width: 0;
+    max-width: 100%;
+    gap: 8px;
+    padding: 10px 12px;
+    overflow-x: auto;
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+  .LobbyChip {
+    flex: 0 0 auto;
+    height: 32px;
+    padding: 0 12px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    background: var(--lobby-hover);
+    color: var(--lobby-excerpt);
+    text-decoration: none !important;
+
+    &.active {
+      background: var(--lobby-active);
+      color: var(--lobby-strong);
+    }
+    .LobbyUnreadDot {
+      flex-basis: 7px;
+      width: 7px;
+      height: 7px;
+      margin: 0;
+    }
+  }
+
+  .IndexPage .DiscussionList {
+    padding: 6px 8px;
+  }
+  // A carousel or wide embed from another extension must not give the whole
+  // phone page a sideways scroll. `clip`, not `hidden`: it creates no scroll
+  // container, so the sticky channel header keeps sticking.
+  .IndexPage .Page-content {
+    overflow-x: clip;
+  }
+  .DiscussionListItem-content {
+    gap: 12px;
+    padding: 10px 8px;
+  }
+  .DiscussionListItem-author .Avatar {
+    --size: 36px;
+    width: 36px;
+    height: 36px;
+    line-height: 36px;
+  }
+  // The reply count moves up beside the time; the last-activity line goes.
+  .LobbyRow-stats {
+    position: absolute;
+    top: 10px;
+    right: 8px;
+  }
+  .LobbyRow-meta {
+    padding-right: 48px;
+  }
+  .LobbyRow-last {
+    display: none;
+  }
+  .LobbyRow-excerpt {
+    font-size: 13px;
+  }
+
+  .LobbyCompose {
+    display: none;
+  }
+  .LobbyFab {
+    display: flex;
+    position: fixed;
+    right: 16px;
+    bottom: calc(~'84px + env(safe-area-inset-bottom, 0px)');
+    z-index: var(--zindex-header);
+    width: 56px;
+    height: 56px;
+    border: 0;
+    border-radius: 16px;
+    background: var(--lobby-accent);
+    color: var(--lobby-on-accent);
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45);
+
+    .Composer-open & {
+      display: none;
+    }
+  }
+}

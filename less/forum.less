@@ -1,0 +1,51 @@
+@import 'tokens';
+@import 'shell';
+@import 'index';
+@import 'rows';
+@import 'online';
+@import 'topic';
+@import 'phone';
+@import 'ticker';
+
+// 🚨 Core's page template carries an inline `[data-theme^="dark"] body`
+// background (so the page never flashes white while CSS loads), which outranks
+// a plain `body` rule: dark mode stayed core's navy instead of --lobby-bg.
+// `html[data-theme] body` outranks it in light and dark alike.
+body,
+html[data-theme] body {
+  font-family: var(--lobby-font);
+  background: var(--lobby-bg);
+  -webkit-font-smoothing: antialiased;
+}
+
+// The forum's welcome message, kept under the channel header as a quiet card
+// instead of a full-width hero.
+.LobbyWelcome {
+  padding: 12px 16px 0;
+
+  .Hero {
+    background: var(--lobby-pinned);
+    color: var(--lobby-text);
+    border: 1px solid var(--lobby-border);
+    border-radius: 10px;
+    padding: 14px 16px;
+    text-align: start;
+  }
+  .Hero .container {
+    padding: 0;
+    width: auto;
+  }
+  .Hero-title {
+    font-size: 15px;
+    font-weight: 600;
+    margin: 0 0 4px;
+  }
+  .Hero-subtitle {
+    font-size: 13px;
+    color: var(--lobby-muted);
+    margin: 0;
+  }
+  .Hero-close {
+    color: var(--lobby-muted);
+  }
+}

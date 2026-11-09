@@ -1,0 +1,877 @@
+// ---------------------------------------------------------------------------
+// The discussion page as a channel conversation.
+// ---------------------------------------------------------------------------
+
+@lobby-topic-rail: 280px;
+
+.DiscussionPage {
+  .Page-hero {
+    position: sticky;
+    top: 0;
+    z-index: 6;
+  }
+  .Page-container {
+    max-width: none;
+    width: 100%;
+    padding: 0;
+    display: flex;
+    // Core lays this page out row-reverse; the thread column is on the right.
+    flex-direction: row;
+    gap: 0;
+  }
+  .Page-content {
+    order: 1;
+    flex: 1 1 auto;
+    min-width: 0;
+    padding: 8px 24px 0;
+  }
+  .Page-sidebar {
+    display: none;
+  }
+  // Room under the last message for the docked bar.
+  .PostStream {
+    padding-bottom: 96px;
+  }
+  // Core's "write a reply" button: the docked bar is the way in now. Its
+  // live preview of the reply being written (article.editing) stays.
+  button.ReplyPlaceholder {
+    display: none;
+  }
+}
+
+@media (min-width: 1100px) {
+  .DiscussionPage .Page-sidebar {
+    display: block;
+    order: 2;
+    flex: 0 0 @lobby-topic-rail;
+    width: @lobby-topic-rail;
+    margin: 0;
+    padding: 18px 16px;
+    background: var(--lobby-rail);
+    border-left: 1px solid var(--lobby-border);
+    min-height: calc(~'100vh - 60px');
+  }
+  .DiscussionPage-nav {
+    position: sticky;
+    top: 78px;
+
+    > ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+  }
+}
+
+// The header bar.
+.LobbyTopicHeader {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+  min-height: 60px;
+  padding: 8px 24px;
+  background: var(--lobby-bg);
+  border-bottom: 1px solid var(--lobby-border);
+}
+
+.LobbyTopicHeader-title {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px 10px;
+  min-width: 0;
+  flex: 1 1 360px;
+}
+
+.LobbyTopicHeader-channel {
+  color: var(--lobby-muted);
+  display: inline-flex;
+  gap: 4px;
+  text-decoration: none !important;
+
+  span {
+    font-family: var(--lobby-mono);
+  }
+  &:hover {
+    color: var(--lobby-text);
+  }
+}
+
+.LobbyTopicHeader-sep {
+  color: var(--lobby-dim);
+}
+
+.LobbyTopicHeader-name {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--lobby-strong);
+  min-width: 0;
+}
+
+.LobbyTopicHeader-replies {
+  color: var(--lobby-faint);
+  font-size: 13px;
+}
+
+.LobbyStack {
+  display: inline-flex;
+
+  .Avatar {
+    --size: 24px;
+    width: 24px;
+    height: 24px;
+    font-size: 10px;
+    line-height: 24px;
+    border: 2px solid var(--lobby-bg);
+    box-sizing: content-box;
+
+    & + .Avatar {
+      margin-left: -6px;
+    }
+  }
+}
+
+.LobbyTopicHeader-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+
+  .Button {
+    height: 32px;
+    padding: 0 12px;
+    border-radius: 8px;
+    font-size: 13px;
+  }
+  .Button:not(.Button--primary) {
+    border: 1px solid var(--lobby-border);
+    background: transparent;
+    color: var(--lobby-text);
+  }
+  .Button--icon:not(.Button--primary) {
+    width: 32px;
+    padding: 0;
+  }
+  // flarum/subscriptions' Follow control is a split button.
+  .ButtonGroup .Button + .Button {
+    margin-left: -1px;
+  }
+}
+
+.LobbySolved.Button {
+  border-color: #3dd68c !important;
+  color: #3dd68c !important;
+  font-weight: 600;
+
+  [data-theme='light'] & {
+    border-color: #13804c !important;
+    color: #13804c !important;
+  }
+}
+
+// Messages: no rule between them, as in a chat.
+.PostStream-item.LobbyPost,
+.PostStream-item.LobbyPost--event,
+.PostStream-item.LobbyPost--article {
+  &::after {
+    display: none !important;
+  }
+}
+
+.LobbyPost {
+  position: relative;
+
+  &:focus-visible {
+    outline: 2px solid var(--lobby-accent);
+    outline-offset: 2px;
+    border-radius: 8px;
+  }
+  &:focus {
+    outline: none;
+  }
+  &:focus-visible {
+    outline: 2px solid var(--lobby-accent);
+  }
+
+  > .Post {
+    // Side-panel postbits reserve height for facts Lobby does not show.
+    min-height: 0;
+    margin: 0 -12px;
+    padding: 10px 12px 4px;
+    border: 0;
+    border-radius: 8px;
+    background: transparent;
+    box-shadow: none;
+
+    &:hover,
+    &:focus-within {
+      background: var(--lobby-hover);
+    }
+  }
+  .Post-container {
+    display: flex;
+    gap: 16px;
+  }
+  .Post-side {
+    position: static;
+    flex: 0 0 40px;
+    width: 40px;
+    margin: 0;
+    float: none;
+
+    > a > .Post-avatar,
+    > .Post-avatar {
+      --size: 40px;
+      width: 40px;
+      height: 40px;
+      font-size: 15px;
+      line-height: 40px;
+    }
+    // Side-mounted postbit facts have no room in a chat column; the inline
+    // line in the header carries the same facts.
+    .Nameplate {
+      display: none;
+    }
+  }
+  .Post-main {
+    flex: 1 1 auto;
+    min-width: 0;
+    padding: 0;
+  }
+  .Post-header {
+    margin-bottom: 2px;
+
+    > ul {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      gap: 2px 8px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+    > ul > li {
+      margin: 0;
+    }
+  }
+  // Core pins badges under the avatar; here they sit beside the name.
+  .PostUser {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 6px;
+  }
+  .PostUser .PostUser-badges {
+    position: static;
+    margin: 0;
+    display: inline-flex;
+    gap: 4px;
+    list-style: none;
+    padding: 0;
+
+    .Badge {
+      --size: 18px;
+    }
+  }
+  .PostUser-name {
+    font-size: 14px;
+    font-weight: 600;
+    margin: 0;
+
+    .Post-avatar {
+      display: none;
+    }
+    a {
+      color: var(--lobby-strong);
+    }
+  }
+  .PostMeta .Dropdown-toggle,
+  .PostHeader-crossRefNumber {
+    font-size: 12px;
+    color: var(--lobby-faint);
+    padding: 0;
+    height: auto;
+  }
+  .Post-body {
+    font-size: 15px;
+    line-height: 1.55;
+    color: var(--lobby-text);
+    max-width: 75ch;
+
+    p {
+      margin: 0 0 6px;
+    }
+    pre,
+    code {
+      font-family: var(--lobby-mono);
+      font-size: 13px;
+    }
+    pre {
+      background: var(--lobby-input);
+      border: 1px solid var(--lobby-border);
+      border-radius: 8px;
+      padding: 10px 12px;
+      max-width: 560px;
+    }
+    img {
+      max-width: ~"min(520px, 100%)";
+      border-radius: 10px;
+    }
+  }
+
+  // The mini toolbar: core's actions, floated over the message's corner.
+  .Post-actions {
+    position: absolute;
+    top: -14px;
+    right: 12px;
+    z-index: 3;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.12s;
+
+    > ul {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      margin: 0;
+      padding: 2px;
+      list-style: none;
+      background: var(--lobby-input);
+      border: 1px solid var(--lobby-input-border);
+      border-radius: 8px;
+      box-shadow: var(--lobby-shadow);
+    }
+    .Button,
+    button {
+      height: 28px;
+      min-width: 30px;
+      border-radius: 6px;
+    }
+    // Icon-only where there is an icon, as drawn: a toolbar of labels would
+    // cover the very message it acts on. The label stays as the tooltip and
+    // for screen readers.
+    .hasIcon .Button-label {
+      .visually-hidden();
+    }
+    .hasIcon .Button-icon {
+      margin: 0;
+    }
+  }
+  > .Post:hover .Post-actions,
+  &:focus-within .Post-actions,
+  .Post-actions:has(.open) {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  // Core gives the footer no height (it overlays the actions row). Here the
+  // actions float, so the footer — likes, "replied to this", and whatever
+  // extensions put there — takes its own room under the message.
+  .Post-footer {
+    display: block;
+    height: auto;
+    margin: 4px 0 0;
+
+    &:empty,
+    > ul:empty {
+      display: none;
+    }
+
+    > ul {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+  }
+}
+
+// Touch screens have no hover: a tap focuses the message (it is tabbable)
+// and the toolbar appears over its corner, compact.
+@media (any-hover: none) {
+  // In flow under the message, not over it: on a narrow screen the toolbar
+  // would cover the very text being acted on.
+  .LobbyPost .Post-actions {
+    position: static;
+    display: none;
+    margin-top: 6px;
+    max-width: 100%;
+
+    > ul {
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+    .Button,
+    button {
+      font-size: 12px;
+      padding: 0 8px;
+    }
+  }
+  .LobbyPost:focus-within .Post-actions {
+    display: block;
+  }
+}
+
+// A follow-on message from the same person: no avatar, no header.
+.LobbyPost--cont {
+  > .Post {
+    padding-top: 2px;
+  }
+  .Post-side {
+    visibility: hidden;
+    height: 0;
+  }
+  .Post-header {
+    display: none;
+  }
+}
+
+.LobbyPost-gutterTime {
+  position: absolute;
+  left: -8px;
+  top: 6px;
+  width: 50px;
+  text-align: right;
+  white-space: nowrap;
+  font-size: 10.5px;
+  color: var(--lobby-dim);
+  opacity: 0;
+  z-index: 1;
+  pointer-events: none;
+
+  .LobbyPost--cont:hover &,
+  .LobbyPost--cont:focus-within & {
+    opacity: 1;
+  }
+}
+
+.LobbyReplyTo {
+  display: block;
+  padding: 6px 0 0 56px;
+  margin-bottom: -6px;
+  font-size: 12px;
+  color: var(--lobby-faint);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  position: relative;
+  z-index: 1;
+  text-decoration: none !important;
+
+  &:hover {
+    color: var(--lobby-text);
+  }
+}
+
+// The reply line says who is being answered; the mention chip that opens
+// the message would say it twice.
+.LobbyPost--reply .Post-body > p:first-child > .PostMention:first-child {
+  display: none;
+}
+
+.LobbyReplyTo-excerpt {
+  color: var(--lobby-dim);
+}
+
+.LobbyDivider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 0 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--lobby-faint);
+
+  &::before,
+  &::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--lobby-border);
+  }
+
+  &--new {
+    padding: 8px 0;
+    color: var(--lobby-red);
+
+    &::before,
+    &::after {
+      background: var(--lobby-red);
+    }
+    &::before {
+      display: none;
+    }
+    // The label sits at the right end, like a chat's unread marker.
+    span {
+      order: 2;
+    }
+  }
+}
+
+// Event posts: one grey system line.
+.LobbyPost--event .EventPost {
+  margin: 0;
+  padding: 6px 0 6px 56px;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  font-size: 13px;
+  color: var(--lobby-faint);
+
+  .EventPost-icon {
+    position: static;
+    float: none;
+    width: auto;
+    margin-right: 8px;
+    font-size: 13px;
+    color: var(--lobby-faint);
+  }
+  .EventPost-info {
+    display: inline;
+  }
+  .username {
+    color: var(--lobby-text);
+    font-weight: 600;
+  }
+}
+
+// A Page Builder article or a blog post keeps its first post as the
+// article: only the colours follow the theme.
+.LobbyPost--article > .Post {
+  margin-bottom: 12px;
+  border-radius: 12px;
+  background: var(--lobby-pinned);
+  border: 1px solid var(--lobby-border);
+}
+
+// Thread info.
+.LobbyThreadInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  color: var(--lobby-text);
+  font-size: 14px;
+}
+
+.LobbyThreadInfo-label {
+  margin: 0 0 8px;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--lobby-faint);
+  font-weight: 600;
+}
+
+.LobbyThreadInfo-facts {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 8px 12px;
+  margin: 0;
+
+  dt {
+    color: var(--lobby-faint);
+    font-weight: 400;
+  }
+  dd {
+    margin: 0;
+    text-align: right;
+  }
+}
+
+.LobbyThreadInfo-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.LobbyTagChip {
+  font-size: 12px;
+  border-radius: 6px;
+  padding: 2px 8px;
+  background: var(--lobby-active);
+  color: var(--lobby-text);
+  text-decoration: none !important;
+}
+
+.LobbyJump {
+  display: flex;
+  gap: 6px;
+
+  .Button {
+    flex: 1;
+    height: 32px;
+    padding: 0;
+    justify-content: center;
+    border-radius: 8px;
+    border: 1px solid var(--lobby-border);
+    background: transparent;
+    color: var(--lobby-text);
+  }
+  .LobbyJump--unread {
+    border-color: var(--lobby-accent);
+    color: var(--lobby-accent-text);
+  }
+}
+
+.LobbyFace--avatar {
+  background: none;
+
+  .Avatar {
+    --size: 30px;
+    width: 30px;
+    height: 30px;
+    line-height: 30px;
+    font-size: 12px;
+  }
+}
+
+.LobbyThreadInfo-controls ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  .Button,
+  button {
+    width: 100%;
+    height: 40px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 10px;
+    padding: 0 12px;
+    border: 0;
+    border-radius: 8px;
+    background: var(--lobby-hover);
+    color: var(--lobby-text);
+    text-align: start;
+
+    .Button-icon {
+      margin: 0;
+      width: 16px;
+    }
+  }
+}
+
+.LobbyThreadModal .Modal-header h3,
+.LobbyThreadModal .Modal-title {
+  color: var(--lobby-strong);
+}
+
+// The docked message bar.
+.LobbyShell-dock {
+  position: fixed;
+  bottom: 0;
+  left: var(--lobby-sidebar-w);
+  right: 0;
+  z-index: 5;
+  pointer-events: none;
+
+  > * {
+    pointer-events: auto;
+  }
+}
+
+@media (min-width: 1100px) {
+  .LobbyShell-dock {
+    right: @lobby-topic-rail;
+  }
+}
+
+.LobbyMessageBar {
+  padding: 12px 24px 20px;
+  background: linear-gradient(to bottom, transparent, var(--lobby-bg) 35%);
+}
+
+.LobbyMessageBar-button {
+  width: 100%;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 8px 0 16px;
+  border-radius: 12px;
+  border: 1px solid var(--lobby-input-border);
+  background: var(--lobby-input);
+  color: var(--lobby-faint);
+  font: inherit;
+  text-align: start;
+  cursor: text;
+
+  &:hover,
+  &:focus-visible {
+    border-color: var(--lobby-accent);
+    color: var(--lobby-text);
+  }
+}
+
+.LobbyMessageBar-label {
+  flex: 1;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.LobbyMessageBar-icon {
+  color: var(--lobby-dim);
+  font-size: 18px;
+}
+
+// The send arrow is a phone affordance, as drawn.
+.LobbyMessageBar-send {
+  display: none;
+}
+
+.LobbyMessageBar--disabled {
+  margin: 12px 24px 20px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 16px;
+  border-radius: 12px;
+  border: 1px dashed var(--lobby-input-border);
+  background: var(--lobby-bg);
+  color: var(--lobby-faint);
+}
+
+// The composer itself, docked under the stream column.
+@media @tablet-up {
+  .App--discussion .App-composer {
+    left: var(--lobby-sidebar-w);
+  }
+}
+
+@media @phone {
+  .DiscussionPage {
+    .Page-hero {
+      display: none;
+    }
+    .Page-content {
+      padding: 4px 14px 0;
+    }
+  }
+  .App--discussion {
+    padding-bottom: calc(~'76px + env(safe-area-inset-bottom, 0px)');
+
+    .LobbyShell-tabbar {
+      display: none;
+    }
+  }
+  .LobbyShell-dock {
+    left: 0;
+    right: 0;
+  }
+  .LobbyMessageBar {
+    padding: 10px 12px calc(~'14px + env(safe-area-inset-bottom, 0px)');
+    background: var(--lobby-bg);
+    border-top: 1px solid var(--lobby-border);
+  }
+  .LobbyMessageBar-button {
+    height: 46px;
+    border-radius: 23px;
+  }
+  .LobbyMessageBar-send {
+    display: flex;
+    flex: 0 0 32px;
+    height: 32px;
+    border-radius: 50%;
+    align-items: center;
+    justify-content: center;
+    background: var(--lobby-accent);
+    color: var(--lobby-on-accent);
+  }
+  .LobbyMessageBar--disabled {
+    margin: 0;
+    border-radius: 0;
+    border-width: 1px 0 0;
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  .LobbyPost {
+    > .Post {
+      margin: 0;
+      padding: 8px 0 2px;
+    }
+    // Core hides the side column on phones and puts the avatar in the name;
+    // a chat keeps it on the left.
+    .Post-side {
+      display: block;
+
+      .Post-avatar {
+        display: inline-flex;
+      }
+    }
+    .Post-header .PostUser .PostUser-badges {
+      position: static;
+      width: auto;
+      margin: 0;
+
+      .Badge {
+        margin-left: 0;
+      }
+    }
+    .Post-container {
+      gap: 12px;
+    }
+    .Post-side {
+      flex-basis: 36px;
+      width: 36px;
+
+      > a > .Post-avatar,
+      > .Post-avatar {
+        --size: 36px;
+        width: 36px;
+        height: 36px;
+        line-height: 36px;
+      }
+    }
+  }
+  .LobbyReplyTo {
+    padding-left: 48px;
+  }
+  .LobbyPost--event .EventPost {
+    padding-left: 48px;
+  }
+  .LobbyPost-gutterTime {
+    display: none;
+  }
+
+  // The topic's top bar: back, channel and replies over the title, ⋯.
+  .LobbyTopBar--topic {
+    height: 60px;
+  }
+  .LobbyTopBar-stack {
+    flex: 1 1 auto;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+  }
+  .LobbyTopBar-sub {
+    font-size: 12px;
+    color: var(--lobby-faint);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    .LobbyTopBar-hash {
+      font-size: 12px;
+    }
+  }
+  .LobbyTopBar--topic .LobbyTopBar-title {
+    font-size: 15px;
+  }
+  .App--discussion {
+    padding-top: 60px;
+  }
+}
